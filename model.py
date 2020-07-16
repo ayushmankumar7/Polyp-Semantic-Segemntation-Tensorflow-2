@@ -1,5 +1,5 @@
 import tensorflow as tf 
-from tensorflow.keras.layers import Conv2D, BatchNormalization,MaxPool2D, Activation, UpSampling2D, Input
+from tensorflow.keras.layers import Conv2D, BatchNormalization,MaxPool2D, Activation, UpSampling2D, Input, Concatenate
 from tensorflow.keras.models import Model
 
 
@@ -34,4 +34,27 @@ def build_model():
         
     #Bridge
 
+    x = conv_block(x, num_filters[-1])
+
+    num_filters.reverse()
+    skip_x.reverse()
+
+    #Decoder
+
+    for i,f in enumerate(num_filters):
+        x = UpSampling2D((2,2))(x)
+        xs = skip_x[i]
+        x = Concatenate()([x,xs])
+        x = conv_block(x,f)
+
+    #output
+    x = Conv2D(1, (1,1), padding ="same")(x)
+    x = Activation("sigmoid")(x)
+
+    return Model(inputs, x)
+
+
+if __name__ == "__main__":
+    model = build_model()
+    print(model.summary())
     
