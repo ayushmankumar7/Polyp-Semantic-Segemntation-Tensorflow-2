@@ -79,6 +79,3 @@ if __name__ == "__main__":
 
         image = np.concatenate(all_images, axis = 1)
         cv2.imwrite(f"results/{i}.png", image)
-
-
-
