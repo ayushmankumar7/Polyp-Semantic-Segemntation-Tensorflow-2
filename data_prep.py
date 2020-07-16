@@ -70,5 +70,3 @@ if __name__ == "__main__":
     ds = tf_dataset(test_x, test_y)
    
     print(ds)
-    for x,y in ds:
-        break
