@@ -13,6 +13,15 @@ from data_prep import load_data, tf_dataset
 from model import build_model
 
 
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
+
+
+
 def iou(y_true, y_pred):
     def f(y_true, y_pred):
         intersection = (y_true * y_pred).sum()
@@ -47,7 +56,7 @@ if __name__ == "__main__":
 
     callbacks = [
         ModelCheckpoint("files/model.h5"),
-        ReduceLROnPlateau(monitor ="val_loss", factot =0.1, patience = 3),
+        ReduceLROnPlateau(monitor ="val_loss", factor =0.1, patience = 3),
         CSVLogger("files/data.csv"),
         TensorBoard(),
         EarlyStopping(monitor = "val_loss", patience = 10, restore_best_weights = False)
