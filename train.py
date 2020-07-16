@@ -36,20 +36,40 @@ if __name__ == "__main__":
     epochs = 20
 
     train_dataset = tf_dataset(train_x, train_y, batch= batch)
-    train_dataset = tf_dataset(valid_x, valid_y, batch= batch)  
+    valid_dataset = tf_dataset(valid_x, valid_y, batch= batch)  
 
     model = build_model()
 
-    optimizer = tf.keras.optimizer.Adam(lr)
-    mertics = ['acc', Recall(), Precision(), iou]
+    optimizer = tf.keras.optimizers.Adam(lr)
+    metrics = ['acc', Recall(), Precision(), iou]
 
     model.compile(loss = "binary_crossentropy", optimizer = optimizer, metrics = metrics)
 
     callbacks = [
         ModelCheckpoint("files/model.h5"),
         ReduceLROnPlateau(monitor ="val_loss", factot =0.1, patience = 3),
-        CSVLogger("files/data.csv").
+        CSVLogger("files/data.csv"),
         TensorBoard(),
         EarlyStopping(monitor = "val_loss", patience = 10, restore_best_weights = False)
-        
+
     ]
+
+
+    train_steps = len(train_x)//batch
+    valid_steps = len(valid_x)//batch
+
+    if len(train_x) % batch != 0:
+        train_steps += 1
+
+    if len(valid_x) % batch != 0:
+        valid_steps += 1
+
+    model.fit(
+        train_dataset,
+        validation_data = valid_dataset,
+        epochs = epochs,
+        steps_per_epoch = train_steps,
+        validation_steps = valid_steps,
+        callbacks = callbacks
+    )
+
