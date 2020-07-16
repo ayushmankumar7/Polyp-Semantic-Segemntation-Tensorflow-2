@@ -42,7 +42,7 @@ if __name__ == "__main__":
     
     batch = 8
     lr = 1e-4
-    epochs = 20
+    epochs = 50
 
     train_dataset = tf_dataset(train_x, train_y, batch= batch)
     valid_dataset = tf_dataset(valid_x, valid_y, batch= batch)  
